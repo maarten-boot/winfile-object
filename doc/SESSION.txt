@@ -1,0 +1,32 @@
+Microsoft Windows 2000 [versie 5.00.2195]
+(C) Copyright 1985-2000 Microsoft Corp.
+
+F:\PROJECT\winfile\winfile-object>b1
+
+F:\PROJECT\winfile\winfile-object>perl winfile.pl  1>backup1.txt
+START Wed Aug 18 20:02:36 2004
+Use of uninitialized value in numeric ne (!=) at lib/aVolume.pm line 334.
+END Wed Aug 18 20:24:31 2004
+
+F:\PROJECT\winfile\winfile-object>perl check.pl          1>check1.txt
+Name "main::GENSYM" used only once: possible typo at check.pl line 189.
+START Wed Aug 18 20:24:39 2004
+END Wed Aug 18 20:26:20 2004
+
+F:\PROJECT\winfile\winfile-object>perl winfile.pl  1>backup2.txt
+START Wed Aug 18 20:26:30 2004
+Use of uninitialized value in numeric ne (!=) at lib/aVolume.pm line 334.
+END Wed Aug 18 20:27:44 2004
+
+F:\PROJECT\winfile\winfile-object>perl check.pl          1>check1.txt
+Name "main::GENSYM" used only once: possible typo at check.pl line 189.
+START Wed Aug 18 20:27:46 2004
+END Wed Aug 18 20:29:37 2004
+
+F:\PROJECT\winfile\winfile-object>perl restore.pl  1>restore.txt
+Name "main::BLOCKS" used only once: possible typo at restore.pl line 252.
+Name "main::REFCOUNT" used only once: possible typo at restore.pl line 253.
+START Wed Aug 18 20:29:44 2004
+END Wed Aug 18 20:39:34 2004
+
+F:\PROJECT\winfile\winfile-object>

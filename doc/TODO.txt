@@ -1,0 +1,4 @@
+IF A FILE IS 0 length check for existing blocks in the files db anyway
+(shorten file)
+
+Win32::IsAdminUser test

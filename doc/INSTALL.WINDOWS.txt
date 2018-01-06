@@ -1,0 +1,247 @@
+=======================================================================
+=======================================================================
+!! WARNING !! WARNING !! WARNING !! WARNING !! WARNING !! WARNING !! WARNING !!
+
+	DISTRUCTIVE PROGRAM AHEAD, PLAY WITH IT AT YOUR OWN RISK
+
+	DISCLAIMER
+
+	This program is still under construction, no warranties are made that it will
+	be safe in any way. Your data and your machine will be at risk.
+	Try only after having made a full backup of your machine.
+
+	We do not guard your sanity
+
+	It may Fry, Cook, Burn or otherwise render your data and/or machine utterly
+	unrepairable beyond redemption.
+
+	YOU HAVE BEEN WARNED
+
+!! WARNING !! WARNING !! WARNING !! WARNING !! WARNING !! WARNING !! WARNING !!
+=======================================================================
+=======================================================================
+
+
+THE WINDOWS INSTALLATION NOTES
+==============================
+
+[CONTEXT]
+
+	tested and developed on WIN2000-Professional (English and Dutch)
+	Known to have problems on W98
+	Testing under WIN-XP(sp2)
+
+	ANY OTHER variation of Windows or its namesakes: NOT TESTED
+
+
+[ NEED FIRST: PERL ]
+
+	USED DURING DEVELOPMENT: ActivestatePerl 5.6.1 (638)
+	+	DB_File
+
+	VERIFIED: ActivestatePerl 5.8.4 (810)
+	+ 	DB_File
+
+	Install activeperl on your machine and add the extra modules using PPM
+	start a command window , type in PPM and the PPM> prompt should appear,
+	do:
+
+	PPM> install DB_File
+
+	to install DB_File from the repository of active state
+	(if you are behind a firewall you may have to set a proxy first)
+
+
+[ NEED ENVIRONMENT VARIABLE: WINFILE ]
+	Setup your environmanet using My Computer -> Properties -> Advanced -> Environment Variables -> System variables
+
+	use New
+
+	Enter in the Variable field: WINFILE
+	Enter in the Variable Value field: <Your Path for the DB files>
+
+	( f:\winfile in my case )
+
+	OK it and close the Properties window with OK
+
+	see if it worked by starting a cmd window
+	type set by itself like:
+
+	c:\> set
+
+	and see if you now have a new Environment variable called WINFILE
+
+	now create %WINFILE/DB with:
+
+	cd %WINFILE
+	mkdir DB
+	exit
+
+	NB!:
+	the %WINFILE%\DB directory holds the database of all the meta data
+	and the compressed datablocks so you want plenty of space here
+	The %WINFILE% directory and all of its contents will be autoskipped during the backup runs.
+
+	NB!:
+	this could be a USB 2 or Firewire disk for offline backup
+	Be sure to mount the disk first before running any incrementals
+	( usb 1 is not advised for the first backup run, but for subsequent runs should be OK )
+
+	NB!:
+	!!YOU CANNOT BACKUP YOUR ACTIVE WINFILE-DB WITH WINFILE!!
+
+
+[UNPACK ZIPFILE]
+
+	unpack the zip file in a suitible location on your machine
+	you yourself may determine where that is.
+	(this can be in %WINFILE% but MUST_NOT be in the DB directory)
+	lets say you install it in x:\Programs\Winfile-0.1
+
+	cd x:
+	cd \Programs
+	mkdir Winfile-0.1
+	( copy the zip file here)
+	unzip Winfile-Object.zip
+
+
+[ FIRST CONTACT ]
+
+	thats it you can now start your first backup run with:
+
+	perl winfile.pl >first.txt
+
+	or with
+
+	b1.bat
+
+	Under normal cases there should be a start and end time on STDERR and no other errormessages
+
+	There are 3 Globals that have a major impact on the program
+
+	$::TEST , $::VERBOSE and $::DEBUG or $::DBG
+
+	If $::TEST is not 0 then only the first detected volume is backupped
+	( in my case that is C: )
+
+	If $::VERBOSE is not 0 some diagnostic messages about visited Directories and Files appear
+	but this should have a minimal effect on the speed of the program.
+
+	If $::DBG or $::DEBUG is not 0 massive amounts of internal diagnostics are send to STDERR and STDOUT.
+	This will seriously impact the speed of the program and will produce many megabytes of diagnostic data
+	It is only needed for serious bug finding if nothing else helps.
+
+	On my work machine (350Mhz,265Mb,7200rpm scsi disk, database on seperate disk )
+	the first run of only the C: volume with 3 GB on it takes 1 hour approximately.
+	It creates a database of 1 GB out of that.
+
+	On my home machine (600Mhz,512Mb, IDE disk, database on seperate disk )
+	the first run of only the C: volume with 3 GB on it takes 30 minutes hour approximately.
+	It creates a database of 1 GB out of that.
+
+	after that you can start an incremental by running winfile again:
+
+	perl winfile.pl >incr.txt
+
+	The increamental runs in several minites if nothing changed much on your system and
+	may run significantly longer proportional to the amount of changed or added data.
+
+	for for a check run, do:
+
+	perl check.pl >check.txt
+
+	The check program will actually check the internal consistency of the databases  only
+	so as to serve as a basis for further test programs.
+
+	the b1.bat will do the first tests with creating a separate text file for each run.
+	Just running the b1.bat file runs a backup , a check another backup followed by a second check
+	for initial diagnostics
+
+[ EXAMPLE OUTPUT ]
+
+Microsoft Windows 2000 [versie 5.00.2195]
+(C) Copyright 1985-2000 Microsoft Corp.
+
+F:\PROJECT\winfile\winfile-object>b1
+
+F:\PROJECT\winfile\winfile-object>perl winfile.pl  1>backup1.txt
+START Fri Aug 13 22:08:51 2004
+Use of uninitialized value in numeric ne (!=) at lib/aVolume.pm line 334.
+END Fri Aug 13 22:33:36 2004
+
+F:\PROJECT\winfile\winfile-object>perl check.pl  1>check1.txt
+Name "main::GENSYM" used only once: possible typo at check.pl line 189.
+START Fri Aug 13 22:33:47 2004
+END Fri Aug 13 22:40:02 2004
+
+F:\PROJECT\winfile\winfile-object>perl winfile.pl  1>backup2.txt
+START Fri Aug 13 22:40:09 2004
+Use of uninitialized value in numeric ne (!=) at lib/aVolume.pm line 334.
+END Fri Aug 13 22:41:20 2004
+
+F:\PROJECT\winfile\winfile-object>perl check.pl  1>check1.txt
+Name "main::GENSYM" used only once: possible typo at check.pl line 189.
+START Fri Aug 13 22:41:22 2004
+END Fri Aug 13 22:43:01 2004
+
+F:\PROJECT\winfile\winfile-object>
+
+[EXAMPLE FIREWIRE]
+
+%WINFILE now set to my FIREWIRE DISK
+
+Microsoft Windows 2000 [versie 5.00.2195]
+(C) Copyright 1985-2000 Microsoft Corp.
+
+F:\PROJECT\winfile\winfile-object>b1
+
+F:\PROJECT\winfile\winfile-object>perl winfile.pl  1>backup1.txt
+START Fri Aug 13 23:08:28 2004
+Use of uninitialized value in numeric ne (!=) at lib/aVolume.pm line 334.
+END Fri Aug 13 23:32:08 2004
+
+F:\PROJECT\winfile\winfile-object>perl check.pl  1>check1.txt
+Name "main::GENSYM" used only once: possible typo at check.pl line 189.
+START Fri Aug 13 23:32:18 2004
+END Fri Aug 13 23:34:00 2004
+
+F:\PROJECT\winfile\winfile-object>perl winfile.pl  1>backup2.txt
+START Fri Aug 13 23:34:04 2004
+Use of uninitialized value in numeric ne (!=) at lib/aVolume.pm line 334.
+END Fri Aug 13 23:35:16 2004
+
+F:\PROJECT\winfile\winfile-object>perl check.pl  1>check1.txt
+Name "main::GENSYM" used only once: possible typo at check.pl line 189.
+START Fri Aug 13 23:35:17 2004
+END Fri Aug 13 23:36:59 2004
+
+F:\PROJECT\winfile\winfile-object>
+
+[DATABASE]
+
+This results in: (my windows version is dutch)
+
+L:\WINFILE\DB>dir
+ De volumenaam van station L is VIDEO
+ Het volumenummer is A4E5-0910
+
+ Map van L:\WINFILE\DB
+
+13-08-2004  22:08       <DIR>          .
+13-08-2004  22:08       <DIR>          ..
+13-08-2004  22:43            1.802.240 ATTRIBUTES.DB
+13-08-2004  22:43          860.266.496 BLOCKS.DB
+13-08-2004  22:43              294.912 DIRS.DB
+13-08-2004  22:43            5.062.656 FILES.DB
+13-08-2004  22:43               16.384 GENSYM.DB
+13-08-2004  22:43               16.384 MACHINE.DB
+13-08-2004  22:43            4.194.304 REFCOUNT.DB
+13-08-2004  22:43               16.384 VOLUMES.DB
+               8 bestand(en)      871.669.760 bytes
+               2 map(pen)  33.207.914.496 bytes beschikbaar
+
+L:\WINFILE\DB>
+
+[END]
+
+

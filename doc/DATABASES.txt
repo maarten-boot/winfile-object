@@ -1,0 +1,78 @@
+# ========================================================
+# GENERAL INFORMATION
+# ========================================================
+
+[GENSYM]
+	use: store running symbols that have to survive a session
+	path:	$WINFILE/DB
+	type: DB_File(BTREE)
+	key:value:
+	(volumename) -> (count) 
+	# used for generating dir2id map  
+	# the dir2id is formatted with sprintf as "%s,%08x", volume_name,count
+
+[MACHINE]
+	use: describe properties of this machine
+	path:	$WINFILE/DB
+	type: DB_File(BTREE)
+	key:value:
+
+[SESSION]
+	use: history of sessions
+	path:	$WINFILE/DB
+	type: DB_File(BTREE)
+	key:value:
+
+
+# ========================================================
+# PATH INFORMATION
+# ========================================================
+
+[VOLUME]
+	use:	store volume properties
+	path:	$WINFILE/DB
+	type: DB_File(BTREE)
+	key:value:
+
+[DIRS]
+	use:	store the dir2id mappping and the reverse mapping
+	path:	$WINFILE/DB
+	type: DB_File(BTREE)
+	key:value:
+		(dir2id) -> (dir_path)
+		(dir_path) -> (dir2id)
+
+[ATTRIBUTES]
+	use:
+	path:	$WINFILE/DB
+	type: DB_File(BTREE)
+	key:value:
+	(dir2id,name) -> (acl,att,sig) (sig = size,mtime,ctime,uid,gid,mode )
+	# sig should be first
+
+[FILES]
+	use:
+	path:	$WINFILE/DB
+	type: DB_File(BTREE)
+	key:value:
+	(dir2id,name,block#) -> (digest) (digest = md5,sha1)
+	# digest should be self identifiable
+
+# ========================================================
+# DATA STORE
+# ========================================================
+
+[BLOCKS]
+	use:
+	path:	$WINFILE/DB
+	type: DB_File(BTREE)
+	key:value:
+	( digest) -> (compressedblock) (currently zlib)
+	# compress method should be self identifiable
+
+[REFCOUNT]
+	use:
+	path:	$WINFILE/DB
+	type: DB_File(BTREE)
+	key:value:
+	( digest) -> (count)

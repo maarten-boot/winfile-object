@@ -1,0 +1,68 @@
+=pod
+
+# WINFILE NOTES
+
+#============================================================
+unique id based on ilength,md5,sha1 with possibility for collission
+
+(block) --md5,sa1-> (len,md5,sha1)
+# a md5 operation on a block yields a md5sum and a crc
+
+(block) --compress--> ('compress-type',compressed-block)p
+# the block is compressed locally and flagged with the type of compressionused
+
+loop:
+# try to find if this block is already in the database
+
+(md5,crc) --partial key match-> (key1)
+# with the md5sum and the crc as partial key we find the first real key
+
+(key1) --lookup in block db-> ('compress-type',compressed-block)p'
+# we retrieve the data block and the compress-type indicator
+
+compare p with p'
+# and compare the 2 blocks with indicator
+
+if not equal:
+	find next block (loop)
+# try all partial matches with this md5 and crc
+
+if equal return this key
+# if we found a exact match then the block is known in the database (block
+pool)
+# so we tell our requestor that
+
+if noblock found:
+		('compress-type',compressed-block)p	store -> newkey
+# a new block is found so we store it under a new extended key
+# and return the new key
+
+return newkey
+
+fullkey -> (md5,crc,seq)
+partial-key (md5) or (md5,crc)
+
+# ===================================================================
+include the idea of sessions
+
+one run is 1 session if it completed normally otherwise
+it is the previous session + this uncompleted session
+as multiple abourted sessions may have run this applies recursively
+a fully completed session commits the partial oned
+
+a aborted session always includes only completed items
+
+partial items are ignored during recovery and a commit removes them
+
+items that changed during the backup are flgged 'changed-during-copy'
+
+#===================================================================
+
+large keys
+
+yyyymmddhhmmss,xxxxxxxx
+
+results in 2^32 items per seconde
+
+
+=end

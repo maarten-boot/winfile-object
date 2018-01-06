@@ -1,0 +1,8 @@
+Installation notes
+
+[ WINDOWS ]
+	see INSTALL.WINDOWS
+
+[ OTHERS ]
+	not tested yet
+

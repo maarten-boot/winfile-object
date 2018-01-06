@@ -1,0 +1,20 @@
+# WHAT AND HOW TO CHECK
+
+[FILE DATA]
+
+BLOCKNR.DB (A)
+	type: DB_File: BTREE
+	key: dir2id,filename,block# 
+	value: block_digest
+
+BLOCKS.DB (B)
+	type: DB_File: BTREE
+	key: block_digest
+	value: a_comppressed_block
+
+to reconstruct a file read each key from A	
+verify that the block numbers are increasing without gaps
+verify that there is a coresponding block in B with the digest found in A
+so A -(digest)-> B
+
+Filenames can be found in ATTRIBUTES.DB 

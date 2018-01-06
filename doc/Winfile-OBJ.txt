@@ -1,0 +1,78 @@
+=pod
+==============================================
+Possible Object model (work in progress)
+==============================================
+
+SESSION object
+	# variables
+	$machine-name
+	@machine-os
+	$machine-type
+	$machine-user
+	$machine-passwd
+	&generate_passwd
+	&validate_passwd
+	$session-id
+	$session-start
+	$session-end
+	%filesystems
+	&detect_filesystems
+	# methods
+	&new_session
+	&store_session
+
+FILESYSTEM object
+	#variables
+	$filesystem-name
+	$filesystem-type
+	&detect_filesystem_type($path)
+	# methods
+	&get_attributes($fstype,$path)
+	&set_attributes($fstype,$path,$attributes)
+
+ITEM object
+	#variables
+	$item-location	== <directory_id>
+	$item-name
+	$item-type
+	&is_file
+	&is_dir
+	@item-attribs
+	&serialize_attribs
+	&deserialize_attribs
+	# methods
+	&item_attribs_changed?
+	&length_changed
+	&modified
+
+DIRECTORY object
+	#variables
+	$directory-path
+	$directory_id
+	# methods
+	&gensym_dir2id(): returns $id
+	&map_path($path): retuns $id
+
+FILE object
+	#variables
+	$file-location == <directory_id>
+	$file-name
+	@data_keys
+	# methods
+	&block_at_pos_changed? ($key) :bool
+
+DATABLOCK object
+	#variables
+	$block-digest ,
+	&digest_changed?
+	$block-data ,
+	$block-refcount
+	&increment
+	&decrement
+	&refcount_zero?
+	# methods
+	&compress_block($data_block,$methode): [ '<compress_id>',$compressed_data]
+	&add_block
+==============================================
+==============================================
+=cut
